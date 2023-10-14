@@ -1,7 +1,7 @@
 # Puravida
 
 ## Overview
-`puravida` is a tiny bash script that creates a terminal command that's a simple one-liner replacement for `mkdir` and `touch` and it's also a cleaner replacement for multi-line text insertion into a file instead of a [here document](https://en.wikipedia.org/wiki/Here_document). I made it because I used these all the time and it just annoyed me that this didn't already exist. Now I use `puravida` all the time.
+`puravida` is a tiny bash script that creates a terminal command that's a simple one-liner replacement for `mkdir` and `touch` and it's also a cleaner replacement for multi-line text insertion like `cat >> file.txt << 'END'` (i.e., [here documents](https://en.wikipedia.org/wiki/Here_document)). I made  `puravida` because I used these all the time and it just annoyed me that this didn't already exist. Now I use `puravida` all the time.
 
 ## More Detail
 Once `puravida` is in your system path, instead of two commands like `mkdir folder` and `echo "hi" >> folder/file.txt` (which of course can be combined in a one-liner like `mkdir folder && echo "hi" >> folder/file.txt`), you can do a clean one-liner with `puravida` like this:
