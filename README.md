@@ -4,11 +4,9 @@
 `puravida` is a tiny bash script that creates a terminal command that's a simple one-liner replacement for `mkdir` and `touch` and it's also a cleaner replacement for multi-line text insertion like `cat >> file.txt << 'END'` (i.e., [here documents](https://en.wikipedia.org/wiki/Here_document)). I made  `puravida` because I used these all the time and it just annoyed me that this didn't already exist. Now I use `puravida` all the time.
 
 ## More Detail
-Once `puravida` is in your system path, instead of two commands like `mkdir folder` and `echo "hi" >> folder/file.txt` (which of course can be combined in a one-liner like `mkdir folder && echo "hi" >> folder/file.txt`), you can do a clean one-liner with `puravida` like this:
+Once `puravida` is in your system path, instead of two commands like `mkdir folder` and `echo "hi" >> folder/file.txt` (which of course can be combined in a one-liner like `mkdir folder && echo "hi" >> folder/file.txt`), you can do a clean one-liner with `puravida` like this: 
 ```
-puravida folder/file.txt ~
-hi
-~
+puravida folder/file.txt "hi"
 ```
 `puravida` can also be a cleaner workaround for putting multiline text in a file in a folder which doesn't exist yet. Instead of
 ```
@@ -26,6 +24,8 @@ second text line
 ~
 ```
 To take all this to its logical conclusion, you can use puravida instead of `touch` to create an empty file. Instead of `touch file.txt` you can do `puravida file.txt`. Same with `mkdir` - instead of creating just an empty folder with `mkdir folder` you can do `puravida folder`.
+
+`mkdir && touch`, `cat >> file.txt << 'END'` - just whyyyyy. Just use `puravida` and enjoy your life a little more 🌴
 
 ## Setup
 - In mac/linux drop this file in `/usr/bin/local` (in mac finder hit `cmd + shift + .` if you don't see the hidden usr folder).
