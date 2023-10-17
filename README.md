@@ -36,7 +36,7 @@ You can also use puravida instead of `touch` to create an empty file. Instead of
 ## Main Use Cases
 🌴 usage 1: oneliner combining `mkdir -p` and `touch`. e.g., `puravida dir_1/dir_2/file.txt`
 
-🌊 usage 2: create (optionally nested) directory and multiple files in it. e.g., `puravida dir/nested_dir file1.txt file2.txt`
+🌊 usage 2: create (optionally nested) directory and one or more empty files in it. e.g., `puravida dir/nested_dir file1.txt file2.txt`
 
 🏖️ usage 3: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
 e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in an `~` line)
