@@ -23,7 +23,7 @@ first text line
 second text line
 ~
 ```
-To take all this to its logical conclusion, you can use puravida instead of `touch` to create an empty file. Instead of `touch file.txt` you can do `puravida file.txt`. Same with `mkdir` - instead of creating just an empty folder with `mkdir folder` you can do `puravida folder`.
+You can also use puravida instead of `touch` to create an empty file. Instead of `touch file.txt` you can do `puravida file.txt`. Same with `mkdir` - instead of creating just an empty folder with `mkdir folder` you can do `puravida folder`.
 
 `mkdir && touch`, `cat >> file.txt << 'END'` - just whyyyyy. Just use `puravida` and enjoy your life a little more 🌴
 
