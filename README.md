@@ -42,4 +42,4 @@ You can also use puravida instead of `touch` to create an empty file. Instead of
 e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in an `~` line)
 
 by mark mcdermott 7/6/23, https://markmcdermott.io
-open sourced under MIT license# puravida
+open source MIT license
