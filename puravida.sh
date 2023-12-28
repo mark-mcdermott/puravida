@@ -4,7 +4,7 @@
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 # THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# drop this file in /usr/bin/local (in finder hit cmd + shift + . if you don't see the hidden usr folder)
+# drop this file in /usr/local/bin (in finder hit cmd + shift + . if you don't see the hidden usr folder)
 # run sudo chmod 755 puravida to give it the right permissions
 # now you should be able to use this anywhere
 # note: this is macOS specific because of the sed command - you can tweak it on linux. something like sed -i '$ d' $FILEPATH might work (untested)
@@ -13,6 +13,8 @@
 # 🌊 usage 2: create (optionally nested) directory and multiple files in it. e.g., puravida dir/nested_dir file1.txt file2.txt
 # 🏖️ usage 3: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
 #             e.g., puravida dir/file.txt ~ (and then it awaits your content paste ending in an ~ line)
+
+# sometimes pasting into puravida (in iTerm2, especially) will replace line breaks with ^M characters. a quick fix seems to be typing stty sane and hitting enter.
 
 # by mark mcdermott 7/6/23, https://markmcdermott.io
 # lots of overkill comments in this small script because bash is essentially jibberish
