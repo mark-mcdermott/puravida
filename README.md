@@ -1,6 +1,8 @@
 # Puravida
 
-![puravida logo and low-poly isometric fishing village illustration](illustration.jpg)
+<p align="center">
+  <img src="illustration.jpg" alt="puravida logo and low-poly isometric fishing village illustration">
+</p>
 
 ## Overview
 
