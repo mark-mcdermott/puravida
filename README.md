@@ -57,5 +57,9 @@ You can also use puravida instead of `touch` to create an empty file. Instead of
 🏖️ usage 4: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
 e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in an `~` line)
 
+## Notes / Limitations
+
+`puravida` decides whether the thing you're creating is a file or a directory by looking at its **final path segment**: if that segment contains a `.` (e.g. `notes.txt`) it's treated as a file, otherwise it's treated as a directory. This means you can't create a *leaf* directory whose name contains a period — `puravida my.dir` and `puravida config.d` create files, not folders. A period in a *parent* directory is fine, though: `puravida my.dir/notes` still creates `my.dir/` as a directory.
+
 by mark mcdermott 7/6/23, https://markmcdermott.io
 open source MIT license
