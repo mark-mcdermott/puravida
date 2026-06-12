@@ -1,15 +1,21 @@
 #!/usr/bin/env bats
 #
 # Test suite for puravida, run with bats-core (https://github.com/bats-core/bats-core).
-#   brew install bats-core   # or: npm i -g bats
+#   brew install bats-core   # or: apt-get install bats / npm i -g bats
 #   bats test/               # or: make test
 #
-# Each test runs in its own throwaway BATS_TEST_TMPDIR, so there is nothing to
-# clean up and no risk of clobbering anything in the working tree.
+# Each test runs in its own throwaway directory, so there is nothing to clean up
+# by hand and no risk of clobbering anything in the working tree.
 
 setup() {
   PURAVIDA="$BATS_TEST_DIRNAME/../puravida"
-  cd "$BATS_TEST_TMPDIR"
+  WORKDIR="$(mktemp -d)"
+  cd "$WORKDIR"
+}
+
+teardown() {
+  cd /
+  rm -rf "$WORKDIR"
 }
 
 @test "usage 1: creates a nested directory and a file from a single dotted path" {
@@ -23,6 +29,13 @@ setup() {
   run "$PURAVIDA" dir1/dir2
   [ "$status" -eq 0 ]
   [ -d dir1/dir2 ]
+}
+
+@test "usage 1: creates a single empty file (touch replacement)" {
+  run "$PURAVIDA" solo.txt
+  [ "$status" -eq 0 ]
+  [ -f solo.txt ]
+  [ ! -s solo.txt ]
 }
 
 @test "usage 2: creates a directory with multiple empty files" {
@@ -44,10 +57,23 @@ setup() {
   [ "$(cat note.txt)" = "hello world" ]
 }
 
+@test "usage 3: writes content with shell-special characters verbatim" {
+  run "$PURAVIDA" note.txt 'cost is $5 & 100%'
+  [ "$status" -eq 0 ]
+  [ "$(cat note.txt)" = 'cost is $5 & 100%' ]
+}
+
 @test "usage 4: writes pasted heredoc-style input up to the ~ terminator" {
   run bash -c "printf 'a\nb\n~\n' | '$PURAVIDA' dir1/dir2/test.txt ~"
   [ "$status" -eq 0 ]
   [ "$(cat dir1/dir2/test.txt)" = "$(printf 'a\nb')" ]
+}
+
+@test "usage 4: an immediate ~ produces an empty file" {
+  run bash -c "printf '~\n' | '$PURAVIDA' dir1/empty.txt ~"
+  [ "$status" -eq 0 ]
+  [ -f dir1/empty.txt ]
+  [ ! -s dir1/empty.txt ]
 }
 
 @test "handles paths that contain spaces" {
@@ -55,6 +81,13 @@ setup() {
   [ "$status" -eq 0 ]
   [ -f "my dir/my file.txt" ]
   [ "$(cat "my dir/my file.txt")" = "hi" ]
+}
+
+@test "a leaf name with a period becomes a file, not a directory (documented limitation)" {
+  run "$PURAVIDA" my.dir
+  [ "$status" -eq 0 ]
+  [ -f my.dir ]
+  [ ! -d my.dir ]
 }
 
 @test "--help prints usage and exits 0" {
