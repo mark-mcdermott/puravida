@@ -1,5 +1,8 @@
 # Puravida
 
+[![CI](https://github.com/mark-mcdermott/puravida/actions/workflows/ci.yml/badge.svg)](https://github.com/mark-mcdermott/puravida/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 <p align="center">
   <img src="illustration.jpg" alt="puravida logo and low-poly isometric fishing village illustration">
 </p>
@@ -41,10 +44,24 @@ You can also use puravida instead of `touch` to create an empty file. Instead of
 
 ## Setup
 
-- In mac/linux drop this file in `/usr/bin/local` (in mac finder hit `cmd + shift + .` if you don't see the hidden usr folder).
-- Run `sudo chmod 755 puravida` to give it the right permissions.
-- Now you should be able to use this anywhere .
-- Note: this is macOS specific because of the sed command - you can tweak it on linux. something like `sed -i '$ d' $FILEPATH` might work (untested)
+Install with `make`:
+
+```
+git clone https://github.com/mark-mcdermott/puravida.git
+cd puravida
+sudo make install          # copies the puravida script to /usr/local/bin
+```
+
+Or do it by hand — drop the `puravida` script into a directory on your `PATH` (e.g. `/usr/local/bin`; in mac Finder hit `cmd + shift + .` if you don't see the hidden `usr` folder) and make it executable:
+
+```
+sudo cp puravida /usr/local/bin/puravida
+sudo chmod 755 /usr/local/bin/puravida
+```
+
+Now you can use `puravida` anywhere. Run `puravida --help` for usage and `puravida --version` for the version.
+
+> **Note:** this is macOS-specific because of the `sed` command. On Linux something like `sed -i '$ d' "$FILEPATH"` might work (untested).
 
 ## Main Use Cases
 
@@ -62,6 +79,18 @@ e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in
 `puravida` decides whether the thing you're creating is a file or a directory by looking at its **final path segment**: if that segment contains a `.` (e.g. `notes.txt`) it's treated as a file, otherwise it's treated as a directory. This means you can't create a *leaf* directory whose name contains a period — `puravida my.dir` and `puravida config.d` create files, not folders. A period in a *parent* directory is fine, though: `puravida my.dir/notes` still creates `my.dir/` as a directory.
 
 For inline contents (usage 3), single quotes, double quotes, and no quotes all work — multiple unquoted words are joined with spaces. Quoting is handled entirely by your shell, so the usual rules apply: double quotes expand `$variables`, backticks, and `!`, while single quotes keep everything literal. Prefer single quotes for literal text — `puravida f.txt 'cost is $5'` writes `cost is $5`, whereas double quotes would try to expand `$5`.
+
+## Development
+
+Tests use [bats-core](https://github.com/bats-core/bats-core) and linting uses [shellcheck](https://www.shellcheck.net/):
+
+```
+brew install bats-core shellcheck   # or your platform's package manager
+make test                           # run the test suite
+make lint                           # run shellcheck
+```
+
+CI runs both on every push and pull request.
 
 by mark mcdermott 7/6/23, https://markmcdermott.io
 open source MIT license
