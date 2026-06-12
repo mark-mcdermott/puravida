@@ -9,11 +9,11 @@
 # now you should be able to use this anywhere
 # works on macOS and linux (paste mode uses portable sed)
 
-# 🌴 usage 1: oneliner combining mkdir -p and touch. e.g., puravida dir_1/dir_2/file.txt
-# 🌊 usage 2: create (optionally nested) directory and multiple files in it. e.g., puravida dir/nested_dir file1.txt file2.txt
-# 🐚 usage 3: create (optionally nested) directory and a file in it with inline contents (single or double quoted). e.g., puravida dir/file.txt "hi"
-# 🏖️ usage 4: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
-#             e.g., puravida dir/file.txt ~ (and then it awaits your content paste ending in an ~ line)
+# usage (run `puravida --help` for details):
+#   puravida <path>                create a file or directory (parent dirs made as needed)
+#   puravida <dir> <file>...       create a directory containing the named files
+#   puravida <file> <content>...   create a file containing the given text
+#   puravida <file> ~              create a file from pasted input ending in a ~ line
 
 # sometimes pasting into puravida (in iTerm2, especially) will replace line breaks with ^M characters. a quick fix seems to be typing stty sane and hitting enter.
 
@@ -26,7 +26,28 @@ set -euo pipefail
 VERSION="1.0.0"
 
 usage() {
-  echo -e "🌴 usage 1: oneliner combining mkdir -p and touch. e.g., \033[36mpuravida dir_1/dir_2/file.txt\033[m\n🌊 usage 2: create (optionally nested) directory and multiple files in it. e.g., \033[36mpuravida dir/nested_dir file1.txt file2.txt\033[m\n🐚 usage 3: create (optionally nested) directory and a file in it with inline contents (single or double quoted). e.g., \033[36mpuravida dir/file.txt \"hi\"\033[m\n🏖️  usage 4: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.\n            e.g., \033[36mpuravida dir/file.txt ~\033[m (and then it awaits your content paste ending in an ~ line)"
+  echo "puravida $VERSION 🌴 — create files and directories in one command"
+  cat <<'EOF'
+
+Usage:
+  puravida <path>                  create a file or directory (parent dirs made as needed)
+  puravida <dir> <file>...         create a directory containing the named files
+  puravida <file> <content>...     create a file containing the given text
+  puravida <file> ~                create a file from pasted input ending in a ~ line
+
+Options:
+  -h, --help     show this help and exit
+      --version  show version and exit
+
+A path whose final segment contains a "." is treated as a file, otherwise a
+directory. Inline content quoting follows your shell's normal rules.
+
+Examples:
+  puravida src/utils/helpers.js          nested dirs + an empty file
+  puravida src index.tsx styles.css      one directory, several files
+  puravida notes.txt "hello there"       a file with inline contents
+  puravida notes.txt ~                   a file with pasted, multi-line contents
+EOF
 }
 
 # no arguments -> print usage to stderr and bail

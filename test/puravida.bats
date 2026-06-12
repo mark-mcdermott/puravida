@@ -93,13 +93,13 @@ teardown() {
 @test "--help prints usage and exits 0" {
   run "$PURAVIDA" --help
   [ "$status" -eq 0 ]
-  [[ "$output" == *"usage 1"* ]]
+  [[ "$output" == *"Usage:"* ]]
 }
 
 @test "-h prints usage and exits 0" {
   run "$PURAVIDA" -h
   [ "$status" -eq 0 ]
-  [[ "$output" == *"usage 1"* ]]
+  [[ "$output" == *"Usage:"* ]]
 }
 
 @test "--version prints the version and exits 0" {
@@ -111,5 +111,5 @@ teardown() {
 @test "no arguments prints usage and exits non-zero" {
   run "$PURAVIDA"
   [ "$status" -ne 0 ]
-  [[ "$output" == *"usage 1"* ]]
+  [[ "$output" == *"Usage:"* ]]
 }
