@@ -1,6 +1,7 @@
 # Puravida
 
-[![CI](https://github.com/mark-mcdermott/puravida/actions/workflows/ci.yml/badge.svg)](https://github.com/mark-mcdermott/puravida/actions/workflows/ci.yml)
+[![tests](https://github.com/mark-mcdermott/puravida/actions/workflows/tests.yml/badge.svg)](https://github.com/mark-mcdermott/puravida/actions/workflows/tests.yml)
+[![lint](https://github.com/mark-mcdermott/puravida/actions/workflows/lint.yml/badge.svg)](https://github.com/mark-mcdermott/puravida/actions/workflows/lint.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <p align="center">
