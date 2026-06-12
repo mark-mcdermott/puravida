@@ -7,12 +7,21 @@ on:
 
 jobs:
   bats:
-    name: bats tests
-    # macOS because puravida relies on BSD `sed -i ''`, which differs from GNU sed
-    runs-on: macos-latest
+    name: bats (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
-      - name: Install bats-core
-        run: brew install bats-core
+      - name: Install bats
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            brew install bats-core
+          else
+            sudo apt-get update && sudo apt-get install -y bats
+          fi
       - name: Run tests
         run: bats test/
