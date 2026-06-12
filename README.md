@@ -61,5 +61,7 @@ e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in
 
 `puravida` decides whether the thing you're creating is a file or a directory by looking at its **final path segment**: if that segment contains a `.` (e.g. `notes.txt`) it's treated as a file, otherwise it's treated as a directory. This means you can't create a *leaf* directory whose name contains a period — `puravida my.dir` and `puravida config.d` create files, not folders. A period in a *parent* directory is fine, though: `puravida my.dir/notes` still creates `my.dir/` as a directory.
 
+For inline contents (usage 3), single quotes, double quotes, and no quotes all work — multiple unquoted words are joined with spaces. Quoting is handled entirely by your shell, so the usual rules apply: double quotes expand `$variables`, backticks, and `!`, while single quotes keep everything literal. Prefer single quotes for literal text — `puravida f.txt 'cost is $5'` writes `cost is $5`, whereas double quotes would try to expand `$5`.
+
 by mark mcdermott 7/6/23, https://markmcdermott.io
 open source MIT license
