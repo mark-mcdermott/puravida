@@ -91,7 +91,7 @@ make test                           # run the test suite
 make lint                           # run shellcheck
 ```
 
-CI runs both on every push and pull request.
+CI runs both on every push and pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor guide.
 
 by mark mcdermott 7/6/23, https://markmcdermott.io
 open source MIT license
