@@ -9,6 +9,7 @@
 main() {
   echo ""
   safety_check
+  trap cleanup EXIT   # armed after safety_check so it never deletes a pre-existing dir1; fires on normal exit and on Ctrl-C
   test1
   test2
   test3
@@ -115,6 +116,10 @@ safety_check() {
     echo "❌ dir1 directory already exists - exiting"
     exit
   fi
+}
+
+cleanup() {
+  rm -rf dir1
 }
 
 success() {
