@@ -62,7 +62,7 @@ sudo chmod 755 /usr/local/bin/puravida
 
 Now you can use `puravida` anywhere. Run `puravida --help` for usage and `puravida --version` for the version.
 
-> **Note:** this is macOS-specific because of the `sed` command. On Linux something like `sed -i '$ d' "$FILEPATH"` might work (untested).
+> **Note:** runs on macOS and Linux — paste mode uses portable `sed`, and CI exercises the test suite on both.
 
 ## Main Use Cases
 
