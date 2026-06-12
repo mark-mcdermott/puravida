@@ -11,7 +11,8 @@
 
 # 🌴 usage 1: oneliner combining mkdir -p and touch. e.g., puravida dir_1/dir_2/file.txt
 # 🌊 usage 2: create (optionally nested) directory and multiple files in it. e.g., puravida dir/nested_dir file1.txt file2.txt
-# 🏖️ usage 3: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
+# 🐚 usage 3: create (optionally nested) directory and a file in it with inline contents (single or double quoted). e.g., puravida dir/file.txt "hi"
+# 🏖️ usage 4: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
 #             e.g., puravida dir/file.txt ~ (and then it awaits your content paste ending in an ~ line)
 
 # sometimes pasting into puravida (in iTerm2, especially) will replace line breaks with ^M characters. a quick fix seems to be typing stty sane and hitting enter.
@@ -22,7 +23,7 @@
 
 # if no arguments, print usage syntax
 if [ $# -eq 0 ]; then
-  >&2 echo -e "🌴 usage 1: oneliner combining mkdir -p and touch. e.g., \033[36mpuravida dir_1/dir_2/file.txt\033[m\n🌊 usage 2: create (optionally nested) directory and multiple files in it. e.g., \033[36mpuravida dir/nested_dir file1.txt file2.txt\033[m\n🏖️  usage 3: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.\n            e.g., \033[36mpuravida dir/file.txt ~\033[m (and then it awaits your content paste ending in an ~ line)"
+  >&2 echo -e "🌴 usage 1: oneliner combining mkdir -p and touch. e.g., \033[36mpuravida dir_1/dir_2/file.txt\033[m\n🌊 usage 2: create (optionally nested) directory and multiple files in it. e.g., \033[36mpuravida dir/nested_dir file1.txt file2.txt\033[m\n🐚 usage 3: create (optionally nested) directory and a file in it with inline contents (single or double quoted). e.g., \033[36mpuravida dir/file.txt \"hi\"\033[m\n🏖️  usage 4: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.\n            e.g., \033[36mpuravida dir/file.txt ~\033[m (and then it awaits your content paste ending in an ~ line)"
   exit 1
 # else if there are arguments
 else
@@ -51,6 +52,14 @@ else
     TEXT=$(sed '/^~$/q')            # and then wait for pasted input ending in a line with just ~ (and then wait for the enter key)
     echo "$TEXT" > $FILEPATH        # print the input to the file
     sed -i '' -e '$ d' $FILEPATH    # delete the last line of the file (the ~ line)
+  # if there's more than one argument and the first looks like a file (ends in .something), the rest is its contents
+  elif [[ $1 =~ \..+$ ]]; then
+    # create the directory/directories and the file, then write the remaining argument(s) into it
+    DIR=$(dirname "$1")
+    mkdir -p "$DIR"
+    FILEPATH=$1
+    shift                           # drop the filepath, leaving just the content argument(s)
+    printf '%s\n' "$*" > "$FILEPATH"  # join the remaining args with spaces and write them to the file (quotes handled by the shell)
   # if there's more than one argument and the second argument is not just a tilda
   else
     DIR=$1

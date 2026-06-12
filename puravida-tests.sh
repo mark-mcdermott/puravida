@@ -16,6 +16,7 @@ main() {
   test5
   test6
   test7
+  test8
   echo ""
 }
 
@@ -89,6 +90,15 @@ test7() {
   if grep -Ez "^a\nb$" "dir1/dir2/test1.txt"; 
   then
   success; else failure; fi; echo " $TEST";  
+  rm -rf dir1
+}
+
+test8() {
+  TEST="inline content (quoted) written to created file in created subdirectory"
+  puravida dir1/dir2/test.txt "hello there"
+  if [ -f "dir1/dir2/test.txt" ] && [ "$(cat dir1/dir2/test.txt)" == "hello there" ];
+  then
+  success; else failure; fi; echo " $TEST";
   rm -rf dir1
 }
 
