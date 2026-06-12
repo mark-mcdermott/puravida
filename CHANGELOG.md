@@ -9,10 +9,12 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - A `man` page (`man/puravida.1`), installed by `make install`.
 - Synopsis, Options, and Exit status sections in the README.
+- Unknown options are now rejected with a clear error.
 
 ### Changed
 - Standardized the `--help` output to the conventional `Usage:` / `Options:` /
-  `Examples:` layout.
+  `Examples:` layout, and removed the emoji from it.
+- Usage errors (no arguments, or an unknown option) now exit with code `2`.
 
 ## [1.0.0] - 2026-06-11
 

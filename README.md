@@ -89,7 +89,8 @@ A path whose final segment contains a `.` is treated as a file; otherwise it's a
 | Code | Meaning |
 | --- | --- |
 | `0` | Success |
-| `1` | Error (e.g. run with no arguments) |
+| `1` | A runtime error (e.g. a file or directory could not be created) |
+| `2` | A usage error (no arguments, or an unknown option) |
 
 ## Main Use Cases
 
