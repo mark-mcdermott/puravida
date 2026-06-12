@@ -6,6 +6,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- A `man` page (`man/puravida.1`), installed by `make install`.
+- Synopsis, Options, and Exit status sections in the README.
+
+### Changed
+- Standardized the `--help` output to the conventional `Usage:` / `Options:` /
+  `Examples:` layout.
+
 ## [1.0.0] - 2026-06-11
 
 ### Added
