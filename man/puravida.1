@@ -1,0 +1,84 @@
+.\" Manpage for puravida.
+.TH PURAVIDA 1 "2026-06-11" "puravida 1.0.0" "User Commands"
+.SH NAME
+puravida \- create files and directories in one command
+.SH SYNOPSIS
+.B puravida
+.I path
+.br
+.B puravida
+.I dir file ...
+.br
+.B puravida
+.I file content ...
+.br
+.B puravida
+.I file
+.B ~
+.br
+.B puravida \-\-help
+.br
+.B puravida \-\-version
+.SH DESCRIPTION
+.B puravida
+is a one\-liner replacement for
+.BR mkdir (1)
+and
+.BR touch (1),
+and a cleaner alternative to here\-documents for writing text into a file.
+Parent directories are created as needed.
+.PP
+Whether an argument is treated as a file or a directory is decided by its final
+path segment: if that segment contains a period (for example
+.IR notes.txt )
+it is treated as a file; otherwise it is treated as a directory. A period in a
+parent segment is fine, so
+.I my.dir/notes
+still creates
+.I my.dir
+as a directory.
+.PP
+For inline contents, quoting is handled by your shell: double quotes expand
+variables while single quotes keep everything literal.
+.SH OPTIONS
+.TP
+.BR \-h ", " \-\-help
+Show usage and exit.
+.TP
+.B \-\-version
+Show the version and exit.
+.SH EXAMPLES
+.TP
+.B puravida src/utils/helpers.js
+Create the nested directories and an empty file.
+.TP
+.B puravida src index.tsx styles.css
+Create the directory
+.I src
+containing two empty files.
+.TP
+.B puravida notes.txt "hello there"
+Create
+.I notes.txt
+containing the text
+.IR "hello there" .
+.TP
+.B puravida notes.txt ~
+Create
+.I notes.txt
+from pasted input; finish by entering a line containing only
+.BR ~ .
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+An error occurred (for example, run with no arguments).
+.SH SEE ALSO
+.BR mkdir (1),
+.BR touch (1)
+.SH AUTHOR
+Mark McDermott (https://markmcdermott.io)
+.SH LICENSE
+MIT
