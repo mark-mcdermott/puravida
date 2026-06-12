@@ -81,16 +81,14 @@ test6() {
   rm -rf dir1
 }
 
-# for this test, paste this in by hand when the tests pause here (but remove the #s)
-# a
-# b
-# ~
+# test7 automates paste/heredoc mode: printf feeds the lines a and b followed by
+# the ~ terminator line over stdin, exactly as if you'd pasted them in by hand
 test7() {
   TEST="pasting in input to created file in created subdirectory"
-  puravida dir1/dir2/test1.txt ~
-  if grep -Ez "^a\nb$" "dir1/dir2/test1.txt"; 
+  printf 'a\nb\n~\n' | puravida dir1/dir2/test1.txt ~
+  if grep -Eqz "^a\nb$" "dir1/dir2/test1.txt";
   then
-  success; else failure; fi; echo " $TEST";  
+  success; else failure; fi; echo " $TEST";
   rm -rf dir1
 }
 
