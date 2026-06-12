@@ -52,7 +52,9 @@ You can also use puravida instead of `touch` to create an empty file. Instead of
 
 🌊 usage 2: create (optionally nested) directory and one or more empty files in it. e.g., `puravida dir/nested_dir file1.txt file2.txt`
 
-🏖️ usage 3: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
+🐚 usage 3: create (optionally nested) directory and a file in it with inline contents (single or double quoted). e.g., `puravida dir/file.txt "hi"`
+
+🏖️ usage 4: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
 e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in an `~` line)
 
 by mark mcdermott 7/6/23, https://markmcdermott.io
