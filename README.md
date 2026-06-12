@@ -64,6 +64,33 @@ Now you can use `puravida` anywhere. Run `puravida --help` for usage and `puravi
 
 > **Note:** runs on macOS and Linux — paste mode uses portable `sed`, and CI exercises the test suite on both.
 
+## Synopsis
+
+```
+puravida <path>                  create a file or directory (parent dirs made as needed)
+puravida <dir> <file>...         create a directory containing the named files
+puravida <file> <content>...     create a file containing the given text
+puravida <file> ~                create a file from pasted input ending in a ~ line
+puravida -h | --help             show usage
+puravida --version               show the version
+```
+
+A path whose final segment contains a `.` is treated as a file; otherwise it's a directory (see [Notes / Limitations](#notes--limitations)).
+
+### Options
+
+| Option | Description |
+| --- | --- |
+| `-h`, `--help` | Show usage and exit |
+| `--version` | Show the version and exit |
+
+### Exit status
+
+| Code | Meaning |
+| --- | --- |
+| `0` | Success |
+| `1` | Error (e.g. run with no arguments) |
+
 ## Main Use Cases
 
 🌴 usage 1: oneliner combining `mkdir -p` and `touch`. e.g., `puravida dir_1/dir_2/file.txt`
