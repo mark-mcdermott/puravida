@@ -108,8 +108,14 @@ teardown() {
   [[ "$output" == *"puravida"* ]]
 }
 
-@test "no arguments prints usage and exits non-zero" {
+@test "no arguments prints usage and exits 2 (usage error)" {
   run "$PURAVIDA"
-  [ "$status" -ne 0 ]
+  [ "$status" -eq 2 ]
   [[ "$output" == *"Usage:"* ]]
+}
+
+@test "an unknown option errors and exits 2" {
+  run "$PURAVIDA" --bogus
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"unknown option"* ]]
 }

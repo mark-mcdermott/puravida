@@ -50,16 +50,17 @@ Examples:
 EOF
 }
 
-# no arguments -> print usage to stderr and bail
+# no arguments -> show usage and exit with a usage error (2)
 if [ $# -eq 0 ]; then
   usage >&2
-  exit 1
+  exit 2
 fi
 
 # handle the help and version flags before treating the first argument as a path
 case "$1" in
   -h|--help)  usage; exit 0 ;;
   --version)  echo "puravida $VERSION"; exit 0 ;;
+  -*)         printf "puravida: unknown option: %s\nTry 'puravida --help' for more information.\n" "$1" >&2; exit 2 ;;
 esac
 
 # if there's only one argument
