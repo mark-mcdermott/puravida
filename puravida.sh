@@ -42,7 +42,7 @@ else
       mkdir -p $1
     fi
   # if there's more than one argument and the second argument is just a tilda
-  elif [ $2 == ~ ]; then
+  elif [ "$2" == ~ ]; then
     # create the directory/directories and the file
     DIR=$(dirname $1)
     mkdir -p $DIR
