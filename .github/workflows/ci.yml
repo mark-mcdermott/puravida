@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint with shellcheck
+        run: shellcheck puravida
+
+  test:
+    name: bats tests
+    # macOS because puravida relies on BSD `sed -i ''`, which differs from GNU sed
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bats-core
+        run: brew install bats-core
+      - name: Run tests
+        run: bats test/
