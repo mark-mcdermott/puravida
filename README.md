@@ -62,6 +62,8 @@ sudo chmod 755 /usr/local/bin/puravida
 
 Now you can use `puravida` anywhere. Run `puravida --help` for usage and `puravida --version` for the version.
 
+Prefer a shorter command? Add a shell alias (`alias pv=puravida` in your `.zshrc`/`.bashrc`) — it only affects interactive shells and is easy to undo. To make the shortcut travel with the install instead, run `sudo make install-pv`, which symlinks `pv` → `puravida` in `/usr/local/bin`. Note that `pv` is also the name of the [pipe viewer](https://www.ivarch.com/programs/pv.shtml) utility, so the symlink will shadow it if you have it installed; remove the shortcut with `sudo make uninstall-pv`.
+
 > **Note:** runs on macOS and Linux — paste mode uses portable `sed`, and CI exercises the test suite on both.
 
 ## Synopsis

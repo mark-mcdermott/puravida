@@ -3,7 +3,7 @@ BINDIR := $(DESTDIR)$(PREFIX)/bin
 MANPREFIX ?= $(PREFIX)/share/man
 MANDIR := $(DESTDIR)$(MANPREFIX)/man1
 
-.PHONY: install uninstall test lint
+.PHONY: install uninstall install-pv uninstall-pv test lint
 
 install:
 	install -d $(BINDIR)
@@ -14,6 +14,13 @@ install:
 uninstall:
 	rm -f $(BINDIR)/puravida
 	rm -f $(MANDIR)/puravida.1
+
+# Opt-in `pv` shortcut. Shadows the `pv` (pipe viewer) utility if installed.
+install-pv: install
+	ln -sf puravida $(BINDIR)/pv
+
+uninstall-pv:
+	rm -f $(BINDIR)/pv
 
 test:
 	bats test/
