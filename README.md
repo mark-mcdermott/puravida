@@ -133,40 +133,34 @@ A path whose final segment contains a `.` is treated as a file; otherwise it's a
 
 ## Usage
 
-**Files and directories.** A path whose final segment contains a `.` is created as a file, otherwise as a directory; parent directories are made as needed. Pass several paths to create them in one command:
+- **Files vs. directories** — a `.` in a path's final segment makes a file, otherwise a directory; a trailing `/` always forces a directory, and `-f` forces dotless names to be files.
+- **Many at once** — each argument is its own path, with parent directories created as needed.
+- **A leading directory holds the rest** — if the first argument is a directory, the paths after it are created inside it.
+- **Content** — text after `~~` is written to the most recently named file; a bare `~` reads multi-line pasted input, ending on a line that's just `~`.
 
-```
-puravida src/components/Button.tsx     # nested directories plus a file
-puravida a.txt b.txt assets/           # two files and a directory
-```
+| Command | Creates |
+| --- | --- |
+| `puravida notes.txt` | file `notes.txt` |
+| `puravida notes` | directory `notes/` |
+| `puravida src/app.js` | `src/` + file `app.js` |
+| `puravida a.txt b.txt` | files `a.txt` and `b.txt` |
+| `puravida assets/` | empty directory `assets/` |
+| `puravida my.dir/` | directory `my.dir/` — trailing `/` beats the dot |
+| `puravida -f Makefile` | file `Makefile` — `-f` forces a dotless file |
+| `puravida logs/api.v2/x.txt` | `logs/` + `api.v2/` dirs + file `x.txt` |
+| `puravida docs/ intro.md api.md` | `docs/` containing `intro.md` and `api.md` |
+| `puravida .claude/ settings.json cmds/x.md` | `.claude/` with `settings.json` and `cmds/x.md` |
+| `puravida notes.txt ~~ hello world` | `notes.txt` containing `hello world` |
+| `puravida a.txt b.txt ~~ hi` | `a.txt` empty, `b.txt` containing `hi` |
+| `puravida notes.txt ~` | `notes.txt` from pasted input (ends on a lone `~`) |
 
-**A leading directory holds the rest.** When the first argument is a directory, the paths named after it are created inside it (with their own parents):
-
-```
-puravida .config/ settings.json themes/dark.css
-```
-
-**Inline content.** Text after the `~~` marker is written to the most recently named file, joined with spaces:
-
-```
-puravida notes.txt ~~ remember the milk
-puravida a.txt b.txt ~~ hi             # a.txt stays empty; b.txt gets "hi"
-```
-
-**Pasted (multi-line) content.** A bare `~` reads input until a line containing only `~`:
+Paste mode in action — type or paste your lines after the `~`, then finish with a line containing only `~`:
 
 ```
 puravida poem.txt ~
 roses are red
 violets are blue
 ~
-```
-
-**Forcing the type.** A trailing `/` forces a directory, even on a dotted name; `-f` forces dotless names to be files:
-
-```
-puravida .vscode/                      # a dotted directory
-puravida -f Makefile LICENSE           # dotless files
 ```
 
 ## Notes / Limitations
