@@ -6,6 +6,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-06-15
+
 ### Fixed
 - Leading-dash paths after `--` now work (e.g. `puravida -- -weird.txt`); `mkdir`,
   `touch`, and `dirname` are invoked with `--` so the name isn't parsed as options.
@@ -74,7 +76,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - The tilde check no longer errors with `too many arguments` on multi-word
   second arguments.
 
-[Unreleased]: https://github.com/mark-mcdermott/puravida/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/mark-mcdermott/puravida/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/mark-mcdermott/puravida/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/mark-mcdermott/puravida/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/mark-mcdermott/puravida/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/mark-mcdermott/puravida/releases/tag/v1.0.0

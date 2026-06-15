@@ -23,7 +23,7 @@
 
 set -euo pipefail
 
-VERSION="2.1.0"
+VERSION="2.1.1"
 
 usage() {
   echo "puravida $VERSION — create files and directories in one command"
