@@ -4,7 +4,7 @@
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 # THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# drop this file in /usr/local/bin (in finder hit cmd + shift + . if you don't see the hidden usr folder)
+# drop this file in a directory on your PATH (e.g. /usr/local/bin)
 # run sudo chmod 755 puravida to give it the right permissions, or just run `make install`
 # now you should be able to use this anywhere
 # works on macOS and linux (paste mode uses portable sed); stays compatible with bash 3.2 (the macOS system bash)
@@ -16,7 +16,7 @@
 #   puravida <file> ~                 create a file from pasted input ending in a ~ line
 #   puravida -f <name>...             force dotless names to be files
 
-# sometimes pasting into puravida (in iTerm2, especially) will replace line breaks with ^M characters. a quick fix seems to be typing stty sane and hitting enter.
+# if pasting in your terminal turns newlines into ^M characters, run `stty sane` to reset it
 
 # by mark mcdermott 7/6/23, https://markmcdermott.io
 # tests for this script available in test/puravida.bats
