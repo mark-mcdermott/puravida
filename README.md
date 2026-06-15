@@ -10,38 +10,49 @@
 
 ## Overview
 
-`puravida` is a tiny bash script that creates a terminal command that's a simple one-liner replacement for `mkdir` and `touch` and it's also a cleaner replacement for multi-line text insertion like `cat >> file.txt << 'END'` (i.e., [here documents](https://en.wikipedia.org/wiki/Here_document)). I made `puravida` because I used these all the time and it just annoyed me that this didn't already exist. Now I use `puravida` all the time.
+`puravida` is a small Bash script for creating files and directories in a single command. It replaces `mkdir -p` followed by `touch`, and offers a cleaner alternative to here-documents (`cat > file << 'END'`) for writing text into a new file. Parent directories are created as needed.
 
-## More Detail
+## Demo
 
-Once `puravida` is in your system path, instead of two commands like `mkdir folder` and `echo "hi" >> folder/file.txt` (which of course can be combined in a one-liner like `mkdir folder && echo "hi" >> folder/file.txt`), you can do a clean one-liner with `puravida` like this:
+<p align="center">
+  <img src="demo.gif" alt="terminal recording demonstrating puravida's main use cases">
+</p>
+
+## What it replaces
+
+Creating a file inside a directory that doesn't exist yet normally takes two commands:
+
+```
+mkdir -p folder
+echo "hi" > folder/file.txt
+```
+
+`puravida` does it in one:
 
 ```
 puravida folder/file.txt ~~ hi
 ```
 
-`puravida` can also be a cleaner workaround for putting multiline text in a file in a folder which doesn't exist yet. Instead of
+Multi-line content usually means a here-document:
 
 ```
-mkdir folder
-cat >> file.txt << 'END'
-first text line
-second text line
+mkdir -p folder
+cat > folder/file.txt << 'END'
+first line
+second line
 END
 ```
 
-you can instead use `puravida` like this:
+`puravida` reads pasted input directly, ending on a line containing only `~`:
 
 ```
 puravida folder/file.txt ~
-first text line
-second text line
+first line
+second line
 ~
 ```
 
-You can also use puravida instead of `touch` to create an empty file. Instead of `touch file.txt` you can do `puravida file.txt`. Same with `mkdir` - instead of creating just an empty folder with `mkdir folder` you can do `puravida folder`.
-
-`mkdir && touch`, `cat >> file.txt << 'END'` - just whyyyyy. Just use `puravida` and enjoy your life a little more 🌴
+It also covers the basics: `puravida file.txt` in place of `touch file.txt`, and `puravida folder` in place of `mkdir folder`.
 
 ## Setup
 
@@ -96,18 +107,43 @@ A path whose final segment contains a `.` is treated as a file; otherwise it's a
 | `1` | A runtime error (e.g. a file or directory could not be created) |
 | `2` | A usage error (no arguments, an unknown option, or `~~` with no preceding file) |
 
-## Main Use Cases
+## Usage
 
-🌴 usage 1: oneliner combining `mkdir -p` and `touch`. e.g., `puravida dir_1/dir_2/file.txt`. Several paths at once each create their own file or directory: `puravida a.txt b.txt` makes two files.
+**Files and directories.** A path whose final segment contains a `.` is created as a file, otherwise as a directory; parent directories are made as needed. Pass several paths to create them in one command:
 
-🌊 usage 2: a leading directory holds the paths created after it (parents made as needed). e.g., `puravida dir/nested_dir file1.txt file2.txt`, or with nesting, `puravida .claude/ settings.json commands/cmd.md`.
+```
+puravida src/components/Button.tsx     # nested directories plus a file
+puravida a.txt b.txt assets/           # two files and a directory
+```
 
-🐚 usage 3: create a file with inline contents after a `~~` marker. e.g., `puravida dir/file.txt ~~ hi`. The content is everything after `~~`, joined with spaces, and it attaches to the most recently named file — so `puravida a.txt b.txt ~~ hi` leaves `a.txt` empty and writes `hi` to `b.txt`.
+**A leading directory holds the rest.** When the first argument is a directory, the paths named after it are created inside it (with their own parents):
 
-🏖️ usage 4: create a file with (optionally multiline) contents you paste in, using a bare `~` (last line must just say `~` and that's all).
-e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in a `~` line)
+```
+puravida .config/ settings.json themes/dark.css
+```
 
-🛠️ flags: `-f`/`--file` forces dotless names to be files, e.g. `puravida -f Makefile LICENSE Dockerfile`.
+**Inline content.** Text after the `~~` marker is written to the most recently named file, joined with spaces:
+
+```
+puravida notes.txt ~~ remember the milk
+puravida a.txt b.txt ~~ hi             # a.txt stays empty; b.txt gets "hi"
+```
+
+**Pasted (multi-line) content.** A bare `~` reads input until a line containing only `~`:
+
+```
+puravida poem.txt ~
+roses are red
+violets are blue
+~
+```
+
+**Forcing the type.** A trailing `/` forces a directory, even on a dotted name; `-f` forces dotless names to be files:
+
+```
+puravida .vscode/                      # a dotted directory
+puravida -f Makefile LICENSE           # dotless files
+```
 
 ## Notes / Limitations
 
@@ -134,5 +170,4 @@ make lint                           # run shellcheck
 
 CI runs both on every push and pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full contributor guide.
 
-by mark mcdermott 7/6/23, https://markmcdermott.io
-open source MIT license
+Created by [Mark McDermott](https://markmcdermott.io) · MIT licensed.
