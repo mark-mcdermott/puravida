@@ -188,15 +188,15 @@ teardown() {
   [ ! -e src/hi ]
 }
 
-# --- multiline paste via ~ -------------------------------------------------
+# --- multiline mode via ~ --------------------------------------------------
 
-@test "paste: ~ writes pasted input up to a lone ~ terminator" {
+@test "multiline: ~ writes input up to a lone ~ terminator" {
   run bash -c "printf 'a\nb\n~\n' | '$PURAVIDA' dir1/dir2/test.txt ~"
   [ "$status" -eq 0 ]
   [ "$(cat dir1/dir2/test.txt)" = "$(printf 'a\nb')" ]
 }
 
-@test "paste: an immediate ~ produces an empty file" {
+@test "multiline: an immediate ~ produces an empty file" {
   run bash -c "printf '~\n' | '$PURAVIDA' dir1/empty.txt ~"
   [ "$status" -eq 0 ]
   [ -f dir1/empty.txt ]

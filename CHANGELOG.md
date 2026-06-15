@@ -54,7 +54,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - Quoted all variable expansions and enabled `set -euo pipefail`, so paths with
   spaces are handled correctly.
-- Paste mode now uses portable `sed`, so the tool runs on Linux as well as macOS.
+- Multiline mode now uses portable `sed`, so the tool runs on Linux as well as macOS.
 - Switched the tilde check to `[[ ]]` for safer, more idiomatic bash.
 - Renamed the script from `puravida.sh` to `puravida` and marked it executable.
 

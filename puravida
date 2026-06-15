@@ -7,13 +7,13 @@
 # drop this file in a directory on your PATH (e.g. /usr/local/bin)
 # run sudo chmod 755 puravida to give it the right permissions, or just run `make install`
 # now you should be able to use this anywhere
-# works on macOS and linux (paste mode uses portable sed); stays compatible with bash 3.2 (the macOS system bash)
+# works on macOS and linux (multiline mode uses portable sed); stays compatible with bash 3.2 (the macOS system bash)
 
 # usage (run `puravida --help` for details):
 #   puravida <path>...               create files (dotted leaf) and directories (dotless leaf or trailing /)
 #   puravida <dir> <path>...          a leading directory holds the paths created after it
 #   puravida <file> ~~ <content>...   create a file containing the inline text after ~~
-#   puravida <file> ~                 create a file from pasted input ending in a ~ line
+#   puravida <file> ~                 create a file from multi-line input ending in a ~ line
 #   puravida -f <name>...             force dotless names to be files
 
 # if pasting in your terminal turns newlines into ^M characters, run `stty sane` to reset it
@@ -33,7 +33,7 @@ Usage:
   puravida <path>...                create files and directories in one command
   puravida <dir> <path>...          a leading directory holds the paths created after it
   puravida <file> ~~ <content>...   create a file containing the inline text after ~~
-  puravida <file> ~                 create a file from pasted input ending in a ~ line
+  puravida <file> ~                 create a file from multi-line input ending in a ~ line
 
 Options:
   -f, --file     treat dotless names as files (e.g. Makefile, LICENSE)
@@ -52,7 +52,7 @@ Examples:
   puravida .claude/ settings.json cmds/  a dir with a file and a nested dir
   puravida -f Makefile LICENSE           dotless files
   puravida notes.txt ~~ hello there      a file with inline contents
-  puravida notes.txt ~                   a file with pasted, multi-line contents
+  puravida notes.txt ~                   a file with multi-line contents
 EOF
 }
 
@@ -103,10 +103,10 @@ fi
 args=("$@")
 last_index=$(( ${#args[@]} - 1 ))
 
-# split off any content section: inline text after the first ~~, or pasted text
+# split off any content section: inline text after the first ~~, or multi-line text
 # after a bare ~ (which the shell expands to $HOME, so it arrives equal to it)
 has_content=0
-paste_mode=0
+multiline_mode=0
 content=""
 marker_index=-1
 for i in "${!args[@]}"; do
@@ -124,7 +124,7 @@ if [ "$marker_index" -ge 0 ]; then
     content="${content_args[*]}"           # join the words after ~~ with spaces
   fi
 elif [ "${args[$last_index]}" = "$HOME" ]; then
-  paste_mode=1
+  multiline_mode=1
   path_count=$last_index
 else
   path_count=${#args[@]}
@@ -166,11 +166,11 @@ if [ "$has_content" -eq 1 ]; then
   if [ -n "$content" ]; then
     printf '%s\n' "$content" > "$last_file"
   fi
-elif [ "$paste_mode" -eq 1 ]; then
+elif [ "$multiline_mode" -eq 1 ]; then
   if [ -z "$last_file" ]; then
-    echo "puravida: ~ needs a file before it to paste into" >&2
+    echo "puravida: ~ needs a file before it to hold the content" >&2
     exit 2
   fi
-  text=$(sed '/^~$/q')                            # read pasted input up to a lone ~ line
+  text=$(sed '/^~$/q')                            # read multi-line input up to a lone ~ line
   printf '%s\n' "$text" | sed '$d' > "$last_file" # write it, dropping the trailing ~ (portable on BSD and GNU sed)
 fi

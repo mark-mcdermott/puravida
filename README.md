@@ -43,7 +43,7 @@ second line
 END
 ```
 
-`puravida` reads pasted input directly, ending on a line containing only `~`:
+`puravida` reads multi-line input directly, ending on a line containing only `~`:
 
 ```
 puravida folder/file.txt ~
@@ -88,7 +88,7 @@ chmod 755 ~/.local/bin/puravida
 
 Now you can use `puravida` anywhere. Run `puravida --help` for usage and `puravida --version` for the version.
 
-> **Note:** runs on macOS and Linux — paste mode uses portable `sed`, and CI exercises the test suite on both.
+> **Note:** runs on macOS and Linux — multiline mode uses portable `sed`, and CI exercises the test suite on both.
 
 ### The `pv` shortcut
 
@@ -136,7 +136,7 @@ A path whose final segment contains a `.` is treated as a file; otherwise it's a
 - **Files vs. directories** — a `.` in a path's final segment makes a file, otherwise a directory; a trailing `/` always forces a directory, and `-f` forces dotless names to be files.
 - **Many at once** — each argument is its own path, with parent directories created as needed.
 - **A leading directory holds the rest** — if the first argument is a directory, the paths after it are created inside it.
-- **Content** — text after `~~` is written to the most recently named file; a bare `~` reads multi-line pasted input, ending on a line that's just `~`.
+- **Content** — text after `~~` is written to the most recently named file; a bare `~` reads multi-line input, ending on a line that's just `~`.
 
 | Command | Creates |
 | --- | --- |
@@ -152,9 +152,9 @@ A path whose final segment contains a `.` is treated as a file; otherwise it's a
 | `puravida .claude/ settings.json cmds/x.md` | `.claude/` with `settings.json` and `cmds/x.md` |
 | `puravida notes.txt ~~ hello world` | `notes.txt` containing `hello world` |
 | `puravida a.txt b.txt ~~ hi` | `a.txt` empty, `b.txt` containing `hi` |
-| `puravida notes.txt ~` | `notes.txt` from pasted input (ends on a lone `~`) |
+| `puravida notes.txt ~` | `notes.txt` from multi-line input (ends on a lone `~`) |
 
-Paste mode in action — type or paste your lines after the `~`, then finish with a line containing only `~`:
+Multiline mode in action — type or paste your lines after the `~`, then finish with a line containing only `~`:
 
 ```
 puravida poem.txt ~
@@ -174,7 +174,7 @@ violets are blue
 
 **Inline content and the `~~` marker.** Content after `~~` is written verbatim into the most recently named file, joined with spaces. Quoting is handled entirely by your shell, so the usual rules apply: double quotes expand `$variables`, backticks, and globs, while single quotes keep everything literal. Prefer single quotes for anything with `$`, quotes, or special characters — `puravida global.css ~~ '@import "tailwindcss";'` writes `@import "tailwindcss";` exactly, whereas leaving it unquoted would drop the quotes and let the shell act on the `;`.
 
-The marker is `~~` (two tildes) rather than one because a bare `~` is reserved for paste mode. `~~` works in every POSIX shell (bash, zsh, dash, ksh) because it isn't a valid tilde-expansion, so the shell passes it through literally. This is technically "unspecified" in POSIX but universal in practice; if a future shell ever expands it, the marker can be swapped for `--`, which is guaranteed by spec.
+The marker is `~~` (two tildes) rather than one because a bare `~` is reserved for multiline mode. `~~` works in every POSIX shell (bash, zsh, dash, ksh) because it isn't a valid tilde-expansion, so the shell passes it through literally. This is technically "unspecified" in POSIX but universal in practice; if a future shell ever expands it, the marker can be swapped for `--`, which is guaranteed by spec.
 
 ## Development
 
