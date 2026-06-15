@@ -7,102 +7,170 @@
 # drop this file in /usr/local/bin (in finder hit cmd + shift + . if you don't see the hidden usr folder)
 # run sudo chmod 755 puravida to give it the right permissions, or just run `make install`
 # now you should be able to use this anywhere
-# works on macOS and linux (paste mode uses portable sed)
+# works on macOS and linux (paste mode uses portable sed); stays compatible with bash 3.2 (the macOS system bash)
 
 # usage (run `puravida --help` for details):
-#   puravida <path>                create a file or directory (parent dirs made as needed)
-#   puravida <dir> <file>...       create a directory containing the named files
-#   puravida <file> <content>...   create a file containing the given text
-#   puravida <file> ~              create a file from pasted input ending in a ~ line
+#   puravida <path>...               create files (dotted leaf) and directories (dotless leaf or trailing /)
+#   puravida <dir> <path>...          a leading directory holds the paths created after it
+#   puravida <file> ~~ <content>...   create a file containing the inline text after ~~
+#   puravida <file> ~                 create a file from pasted input ending in a ~ line
+#   puravida -f <name>...             force dotless names to be files
 
 # sometimes pasting into puravida (in iTerm2, especially) will replace line breaks with ^M characters. a quick fix seems to be typing stty sane and hitting enter.
 
 # by mark mcdermott 7/6/23, https://markmcdermott.io
-# lots of overkill comments in this small script because bash is essentially jibberish
 # tests for this script available in test/puravida.bats
 
 set -euo pipefail
 
-VERSION="1.0.0"
+VERSION="2.0.0"
 
 usage() {
   echo "puravida $VERSION — create files and directories in one command"
   cat <<'EOF'
 
 Usage:
-  puravida <path>                  create a file or directory (parent dirs made as needed)
-  puravida <dir> <file>...         create a directory containing the named files
-  puravida <file> <content>...     create a file containing the given text
-  puravida <file> ~                create a file from pasted input ending in a ~ line
+  puravida <path>...                create files and directories in one command
+  puravida <dir> <path>...          a leading directory holds the paths created after it
+  puravida <file> ~~ <content>...   create a file containing the inline text after ~~
+  puravida <file> ~                 create a file from pasted input ending in a ~ line
 
 Options:
+  -f, --file     treat dotless names as files (e.g. Makefile, LICENSE)
   -h, --help     show this help and exit
       --version  show version and exit
 
-A path whose final segment contains a "." is treated as a file, otherwise a
-directory. Inline content quoting follows your shell's normal rules.
+Each path is a file when its final segment contains a "." and a directory
+otherwise; a trailing "/" always forces a directory. Parent directories are
+created as needed. Inline content after ~~ is written verbatim — quoting follows
+your shell's normal rules, so single-quote anything with $, quotes, or spaces.
 
 Examples:
   puravida src/utils/helpers.js          nested dirs + an empty file
-  puravida src index.tsx styles.css      one directory, several files
-  puravida notes.txt "hello there"       a file with inline contents
+  puravida a.txt b.txt                   two empty files
+  puravida src index.tsx styles.css      one directory holding several files
+  puravida .claude/ settings.json cmds/  a dir with a file and a nested dir
+  puravida -f Makefile LICENSE           dotless files
+  puravida notes.txt ~~ hello there      a file with inline contents
   puravida notes.txt ~                   a file with pasted, multi-line contents
 EOF
 }
 
-# no arguments -> show usage and exit with a usage error (2)
+# file-vs-directory decision for a single path argument
+classify() {
+  case "$1" in
+    */) echo dir; return ;;                 # a trailing slash always means a directory
+  esac
+  if [ "$force_file" -eq 1 ]; then
+    echo file; return                       # -f makes dotless names files
+  fi
+  local leaf=${1##*/}                       # the final path segment decides the type
+  case "$leaf" in
+    *.*) echo file ;;                       # a "." in the leaf -> file
+    *)   echo dir ;;                        # otherwise -> directory
+  esac
+}
+
+# create a single path of the given type, making parent directories as needed
+make_path() {
+  if [ "$2" = dir ]; then
+    mkdir -p "${1%/}"
+  else
+    mkdir -p "$(dirname "$1")"
+    touch "$1"
+  fi
+}
+
+force_file=0
+
+# handle options before treating arguments as paths (-f continues; others exit)
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -h|--help)  usage; exit 0 ;;
+    --version)  echo "puravida $VERSION"; exit 0 ;;
+    -f|--file)  force_file=1; shift ;;
+    --)         shift; break ;;
+    -*)         printf "puravida: unknown option: %s\nTry 'puravida --help' for more information.\n" "$1" >&2; exit 2 ;;
+    *)          break ;;
+  esac
+done
+
 if [ $# -eq 0 ]; then
   usage >&2
   exit 2
 fi
 
-# handle the help and version flags before treating the first argument as a path
-case "$1" in
-  -h|--help)  usage; exit 0 ;;
-  --version)  echo "puravida $VERSION"; exit 0 ;;
-  -*)         printf "puravida: unknown option: %s\nTry 'puravida --help' for more information.\n" "$1" >&2; exit 2 ;;
-esac
+args=("$@")
+last_index=$(( ${#args[@]} - 1 ))
 
-# if there's only one argument
-if [ $# -eq 1 ]; then
-  # if the only argument is a path ending in a file
-  # (if the argument ends in a period followed by one or more characters)
-  if [[ $1 =~ \..+$ ]]; then
-    # create the directory/directories and then create the file
-    DIR=$(dirname "$1")
-    mkdir -p "$DIR"
-    FILEPATH=$1
-    touch "$FILEPATH"
-  # if the only argument is just a directory or nested directory path with no file
-  else
-    # just create the directory/directories
-    mkdir -p "$1"
+# split off any content section: inline text after the first ~~, or pasted text
+# after a bare ~ (which the shell expands to $HOME, so it arrives equal to it)
+has_content=0
+paste_mode=0
+content=""
+marker_index=-1
+for i in "${!args[@]}"; do
+  if [ "${args[$i]}" = "~~" ]; then
+    marker_index=$i
+    break
   fi
-# if there's more than one argument and the second is a tilda (an unquoted ~ on the command line expands to $HOME)
-elif [[ $2 == "$HOME" ]]; then
-  # create the directory/directories and the file
-  DIR=$(dirname "$1")
-  mkdir -p "$DIR"
-  FILEPATH=$1
-  touch "$FILEPATH"
-  TEXT=$(sed '/^~$/q')                            # wait for pasted input ending in a line with just ~ (then the enter key)
-  printf '%s\n' "$TEXT" | sed '$d' > "$FILEPATH"  # write the input, dropping the trailing ~ line (portable on BSD and GNU sed)
-# if there's more than one argument and the first looks like a file (ends in .something), the rest is its contents
-elif [[ $1 =~ \..+$ ]]; then
-  # create the directory/directories and the file, then write the remaining argument(s) into it
-  DIR=$(dirname "$1")
-  mkdir -p "$DIR"
-  FILEPATH=$1
-  shift                            # drop the filepath, leaving just the content argument(s)
-  printf '%s\n' "$*" > "$FILEPATH" # join the remaining args with spaces and write them to the file (quotes handled by the shell)
-# if there's more than one argument and the second argument is not just a tilda
+done
+
+if [ "$marker_index" -ge 0 ]; then
+  has_content=1
+  path_count=$marker_index
+  if [ $(( ${#args[@]} - marker_index - 1 )) -gt 0 ]; then
+    content_args=("${args[@]:marker_index+1}")
+    content="${content_args[*]}"           # join the words after ~~ with spaces
+  fi
+elif [ "${args[$last_index]}" = "$HOME" ]; then
+  paste_mode=1
+  path_count=$last_index
 else
-  DIR=$1
-  mkdir -p "$DIR"           # create the directory/directories
-  shift                     # remove the first argument from the array of all the arguments
-  for FILE in "$@"          # loop through the remaining arguments array
-  do
-    FILEPATH="$DIR/$FILE"
-    touch "$FILEPATH"       # create each file in the arguments array
+  path_count=${#args[@]}
+fi
+
+if [ "$path_count" -eq 0 ]; then
+  echo "puravida: no path given" >&2
+  exit 2
+fi
+paths=("${args[@]:0:path_count}")
+
+# create every path, remembering the most recently created file for content
+last_file=""
+first_type=$(classify "${paths[0]}")
+
+if [ "$first_type" = dir ] && [ ${#paths[@]} -gt 1 ]; then
+  container=${paths[0]%/}
+  mkdir -p "$container"
+  for path in "${paths[@]:1}"; do
+    kind=$(classify "$path")
+    target="$container/$path"
+    make_path "$target" "$kind"
+    [ "$kind" = file ] && last_file=$target
   done
+else
+  for path in "${paths[@]}"; do
+    kind=$(classify "$path")
+    make_path "$path" "$kind"
+    [ "$kind" = file ] && last_file=$path
+  done
+fi
+
+# write any content into the last file that was named
+if [ "$has_content" -eq 1 ]; then
+  if [ -z "$last_file" ]; then
+    echo "puravida: ~~ needs a file before it to hold the content" >&2
+    exit 2
+  fi
+  if [ -n "$content" ]; then
+    printf '%s\n' "$content" > "$last_file"
+  fi
+elif [ "$paste_mode" -eq 1 ]; then
+  if [ -z "$last_file" ]; then
+    echo "puravida: ~ needs a file before it to paste into" >&2
+    exit 2
+  fi
+  text=$(sed '/^~$/q')                            # read pasted input up to a lone ~ line
+  printf '%s\n' "$text" | sed '$d' > "$last_file" # write it, dropping the trailing ~ (portable on BSD and GNU sed)
 fi
