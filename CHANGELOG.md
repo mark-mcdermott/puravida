@@ -6,6 +6,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+- Leading-dash paths after `--` now work (e.g. `puravida -- -weird.txt`); `mkdir`,
+  `touch`, and `dirname` are invoked with `--` so the name isn't parsed as options.
+
 ## [2.1.0] - 2026-06-15
 
 ### Added

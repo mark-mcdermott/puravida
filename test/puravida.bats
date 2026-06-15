@@ -220,6 +220,21 @@ teardown() {
   [ "$(cat "my dir/my file.txt")" = "hi" ]
 }
 
+# --- leading-dash paths (after the -- end-of-options marker) ----------------
+
+@test "dash: -- lets a leading-dash filename through" {
+  run "$PURAVIDA" -- -weird.txt
+  [ "$status" -eq 0 ]
+  [ -f ./-weird.txt ]
+}
+
+@test "dash: -- handles a leading-dash directory in the path" {
+  run "$PURAVIDA" -- -d/file.txt
+  [ "$status" -eq 0 ]
+  [ -d ./-d ]
+  [ -f ./-d/file.txt ]
+}
+
 # --- flags and errors ------------------------------------------------------
 
 @test "--help prints usage and exits 0" {

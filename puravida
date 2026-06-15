@@ -74,10 +74,10 @@ classify() {
 # create a single path of the given type, making parent directories as needed
 make_path() {
   if [ "$2" = dir ]; then
-    mkdir -p "${1%/}"
+    mkdir -p -- "${1%/}"
   else
-    mkdir -p "$(dirname "$1")"
-    touch "$1"
+    mkdir -p -- "$(dirname -- "$1")"
+    touch -- "$1"
   fi
 }
 
@@ -151,7 +151,7 @@ first_type=$(classify "${paths[0]}")
 
 if [ "$first_type" = dir ] && [ ${#paths[@]} -gt 1 ]; then
   container=${paths[0]%/}
-  mkdir -p "$container"
+  mkdir -p -- "$container"
   for path in "${paths[@]:1}"; do
     kind=$(classify "$path")
     target="$container/$path"
