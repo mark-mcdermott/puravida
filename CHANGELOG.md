@@ -6,6 +6,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-06-15
+
 ### Added
 - `make install-user` / `make uninstall-user` for a per-user install under
   `~/.local` (no `sudo`). The README now leads with this; `sudo make install`
@@ -14,6 +16,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - A `~~word` argument (the content marker with no following space) now exits
   with a hint instead of silently creating a directory named `~~word`.
+- Renamed "paste mode" to "multiline mode" across the docs, help text, and the
+  `~`-with-no-file error message.
 
 ## [2.0.0] - 2026-06-14
 
@@ -66,6 +70,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - The tilde check no longer errors with `too many arguments` on multi-word
   second arguments.
 
-[Unreleased]: https://github.com/mark-mcdermott/puravida/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/mark-mcdermott/puravida/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/mark-mcdermott/puravida/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/mark-mcdermott/puravida/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/mark-mcdermott/puravida/releases/tag/v1.0.0
