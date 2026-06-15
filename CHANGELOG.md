@@ -6,6 +6,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- `make install-user` / `make uninstall-user` for a per-user install under
+  `~/.local` (no `sudo`). The README now leads with this; `sudo make install`
+  remains the system-wide option.
+
 ## [2.0.0] - 2026-06-14
 
 ### Changed

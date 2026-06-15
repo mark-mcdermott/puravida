@@ -56,24 +56,39 @@ It also covers the basics: `puravida file.txt` in place of `touch file.txt`, and
 
 ## Setup
 
-Install with `make`:
+Clone the repo and install with `make`. The per-user install needs no `sudo`:
 
 ```
 git clone https://github.com/mark-mcdermott/puravida.git
 cd puravida
-sudo make install          # copies the puravida script to /usr/local/bin
+make install-user          # installs under ~/.local — no sudo
 ```
 
-Or do it by hand — drop the `puravida` script into a directory on your `PATH` (e.g. `/usr/local/bin`) and make it executable:
+This puts `puravida` in `~/.local/bin` and its man page under `~/.local/share/man`. Make sure `~/.local/bin` is on your `PATH` — it is by default on most Linux distributions; on macOS, add it to your shell profile:
 
 ```
-sudo cp puravida /usr/local/bin/puravida
-sudo chmod 755 /usr/local/bin/puravida
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+To install **system-wide** for all users instead — this is the variant that needs `sudo`, and it writes to `/usr/local`:
+
+```
+sudo make install
+```
+
+Both honor `PREFIX`, so you can install anywhere: `make install PREFIX=/opt/puravida`.
+
+Or do it by hand — copy the script into any directory on your `PATH` and make it executable:
+
+```
+mkdir -p ~/.local/bin
+cp puravida ~/.local/bin/puravida
+chmod 755 ~/.local/bin/puravida
 ```
 
 Now you can use `puravida` anywhere. Run `puravida --help` for usage and `puravida --version` for the version.
 
-Prefer a shorter command? Add a shell alias (`alias pv=puravida` in your `.zshrc`/`.bashrc`) — it only affects interactive shells and is easy to undo. To make the shortcut travel with the install instead, run `sudo make install-pv`, which symlinks `pv` → `puravida` in `/usr/local/bin`. Note that `pv` is also the name of the [pipe viewer](https://www.ivarch.com/programs/pv.shtml) utility, so the symlink will shadow it if you have it installed; remove the shortcut with `sudo make uninstall-pv`.
+Prefer a shorter command? Add a shell alias (`alias pv=puravida` in your `.zshrc`/`.bashrc`) — it only affects interactive shells and is easy to undo. To make the shortcut travel with the install instead, run `make install-pv` (append `PREFIX=~/.local` to match the per-user install, or use `sudo` for a system-wide one), which symlinks `pv` → `puravida`. Note that `pv` is also the name of the [pipe viewer](https://www.ivarch.com/programs/pv.shtml) utility, so the symlink will shadow it if you have it installed; remove the shortcut with `make uninstall-pv`.
 
 > **Note:** runs on macOS and Linux — paste mode uses portable `sed`, and CI exercises the test suite on both.
 
