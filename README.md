@@ -80,13 +80,10 @@ Prefer a shorter command? Add a shell alias (`alias pv=puravida` in your `.zshrc
 ## Synopsis
 
 ```
-puravida <path>...               create files (dotted leaf) and directories (dotless leaf or trailing /)
-puravida <dir> <path>...         a leading directory holds the paths created after it
-puravida <file> ~~ <content>...  create a file containing the inline text after ~~
-puravida <file> ~                create a file from pasted input ending in a ~ line
-puravida -f <name>...            force dotless names to be files (e.g. Makefile)
-puravida -h | --help             show usage
-puravida --version               show the version
+puravida [-f] <path>...
+puravida <file> ~~ <content>...
+puravida <file> ~
+puravida -h | --help | --version
 ```
 
 A path whose final segment contains a `.` is treated as a file; otherwise it's a directory. A trailing `/` always forces a directory (see [Notes / Limitations](#notes--limitations)).
