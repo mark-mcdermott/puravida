@@ -56,6 +56,16 @@ It also covers the basics: `puravida file.txt` in place of `touch file.txt`, and
 
 ## Setup
 
+### Homebrew (macOS and Linux)
+
+```
+brew install mark-mcdermott/tap/puravida
+```
+
+Then `brew upgrade puravida` updates it and `brew uninstall puravida` removes it.
+
+### From source
+
 Clone the repo and install with `make`. The per-user install needs no `sudo`:
 
 ```
