@@ -62,13 +62,23 @@ Inline content is introduced by
 .BR ~~ :
 everything after the first
 .B ~~
-is written, joined with spaces, into the most recently named file. Shells pass
+is written, joined with spaces, into the most recently named file. The
+.B ~~
+must be a separate word with a space on each side;
+.I ~~hello
+(no space) is read as a path rather than a marker, and is rejected. Shells pass
 .B ~~
 through literally because it is not a valid tilde\-expansion. Content is written
 verbatim, so quoting follows your shell's normal rules: single\-quote anything
 containing
 .BR $ ,
 quotes, or spaces.
+.PP
+A bare
+.B ~
+as the final argument starts multiline mode: it reads content from standard
+input into the most recently named file, finishing at a line containing only
+.BR ~ .
 .SH OPTIONS
 .TP
 .BR \-f ", " \-\-file
@@ -119,9 +129,9 @@ Success.
 A runtime error (for example, a file or directory could not be created).
 .TP
 .B 2
-A usage error (no arguments, an unknown option, or
+A usage error (no arguments, an unknown option, or a misused
 .B ~~
-with no preceding file).
+marker \(em no preceding file, or no following space).
 .SH SEE ALSO
 .BR mkdir (1),
 .BR touch (1)

@@ -136,6 +136,15 @@ if [ "$path_count" -eq 0 ]; then
 fi
 paths=("${args[@]:0:path_count}")
 
+# a "~~word" argument means a forgotten space after the content marker
+for path in "${paths[@]}"; do
+  case "$path" in
+    "~~"?*)
+      printf "puravida: '%s' is read as a path; the ~~ content marker needs a space after it — did you mean '~~ %s'?\n" "$path" "${path#"~~"}" >&2
+      exit 2 ;;
+  esac
+done
+
 # create every path, remembering the most recently created file for content
 last_file=""
 first_type=$(classify "${paths[0]}")

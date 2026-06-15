@@ -11,6 +11,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `~/.local` (no `sudo`). The README now leads with this; `sudo make install`
   remains the system-wide option.
 
+### Changed
+- A `~~word` argument (the content marker with no following space) now exits
+  with a hint instead of silently creating a directory named `~~word`.
+
 ## [2.0.0] - 2026-06-14
 
 ### Changed

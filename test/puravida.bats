@@ -188,6 +188,14 @@ teardown() {
   [ ! -e src/hi ]
 }
 
+@test "content: ~~ with no following space errors instead of making a stray directory" {
+  run "$PURAVIDA" notes.txt ~~hello
+  [ "$status" -eq 2 ]
+  [ ! -e notes.txt ]
+  [ ! -e "~~hello" ]
+  [[ "$output" == *"needs a space"* ]]
+}
+
 # --- multiline mode via ~ --------------------------------------------------
 
 @test "multiline: ~ writes input up to a lone ~ terminator" {
