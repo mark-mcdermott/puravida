@@ -1,20 +1,27 @@
 .\" Manpage for puravida.
-.TH PURAVIDA 1 "2026-06-11" "puravida 1.0.0" "User Commands"
+.TH PURAVIDA 1 "2026-06-14" "puravida 2.0.0" "User Commands"
 .SH NAME
 puravida \- create files and directories in one command
 .SH SYNOPSIS
 .B puravida
-.I path
+.RI [ path "...]"
 .br
 .B puravida
-.I dir file ...
+.I dir
+.RI [ path "...]"
 .br
 .B puravida
-.I file content ...
+.I file
+.B ~~
+.RI [ content "...]"
 .br
 .B puravida
 .I file
 .B ~
+.br
+.B puravida
+.B \-f
+.RI [ name "...]"
 .br
 .B puravida \-\-help
 .br
@@ -28,19 +35,53 @@ and
 and a cleaner alternative to here\-documents for writing text into a file.
 Parent directories are created as needed.
 .PP
-Whether an argument is treated as a file or a directory is decided by its final
-path segment: if that segment contains a period (for example
+Each argument is a path. Whether it is created as a file or a directory is
+decided by its final path segment: if that segment contains a period (for
+example
 .IR notes.txt )
-it is treated as a file; otherwise it is treated as a directory. A period in a
-parent segment is fine, so
+it is a file; otherwise it is a directory. A period in a parent segment is fine,
+so
 .I my.dir/notes
 still creates
 .I my.dir
-as a directory.
+as a directory. A trailing
+.B /
+always forces a directory, even when the leaf contains a period
+.RI ( my.bak/ ).
 .PP
-For inline contents, quoting is handled by your shell: double quotes expand
-variables while single quotes keep everything literal.
+If the first argument is a directory, the paths named after it are created
+.I inside
+it (with their own parent directories made as needed). If the first argument is
+a file, every argument is created independently in the current directory, so
+.I puravida a.txt b.txt
+creates two files.
+.PP
+There is no
+.B \-d
+flag: a trailing
+.B /
+already forces a directory inline and composably (on any argument, not just the
+first), which makes a separate flag redundant. Only the opposite case \(em
+forcing a dotless name to be a file \(em needs the
+.B \-f
+flag, because there is no inline marker for it.
+.PP
+Inline content is introduced by
+.BR ~~ :
+everything after the first
+.B ~~
+is written, joined with spaces, into the most recently named file. Shells pass
+.B ~~
+through literally because it is not a valid tilde\-expansion. Content is written
+verbatim, so quoting follows your shell's normal rules: single\-quote anything
+containing
+.BR $ ,
+quotes, or spaces.
 .SH OPTIONS
+.TP
+.BR \-f ", " \-\-file
+Treat dotless names as files (for example
+.IR Makefile " or " LICENSE ).
 .TP
 .BR \-h ", " \-\-help
 Show usage and exit.
@@ -52,16 +93,25 @@ Show the version and exit.
 .B puravida src/utils/helpers.js
 Create the nested directories and an empty file.
 .TP
-.B puravida src index.tsx styles.css
-Create the directory
-.I src
-containing two empty files.
+.B puravida a.txt b.txt
+Create two empty files.
 .TP
-.B puravida notes.txt "hello there"
+.B puravida .claude/ settings.json commands/cmd.md
 Create
-.I notes.txt
-containing the text
-.IR "hello there" .
+.I .claude
+containing
+.I settings.json
+and
+.IR commands/cmd.md .
+.TP
+.B puravida -f Makefile LICENSE
+Create two dotless files.
+.TP
+.B puravida global.css ~~ \(aq@import \(dqtailwindcss\(dq;\(aq
+Create
+.I global.css
+containing the import line verbatim \(em the double quotes and semicolon are
+preserved because the content is single\-quoted.
 .TP
 .B puravida notes.txt ~
 Create
@@ -77,7 +127,9 @@ Success.
 A runtime error (for example, a file or directory could not be created).
 .TP
 .B 2
-A usage error (no arguments, or an unknown option).
+A usage error (no arguments, an unknown option, or
+.B ~~
+with no preceding file).
 .SH SEE ALSO
 .BR mkdir (1),
 .BR touch (1)

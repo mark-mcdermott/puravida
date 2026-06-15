@@ -17,7 +17,7 @@
 Once `puravida` is in your system path, instead of two commands like `mkdir folder` and `echo "hi" >> folder/file.txt` (which of course can be combined in a one-liner like `mkdir folder && echo "hi" >> folder/file.txt`), you can do a clean one-liner with `puravida` like this:
 
 ```
-puravida folder/file.txt "hi"
+puravida folder/file.txt ~~ hi
 ```
 
 `puravida` can also be a cleaner workaround for putting multiline text in a file in a folder which doesn't exist yet. Instead of
@@ -69,20 +69,22 @@ Prefer a shorter command? Add a shell alias (`alias pv=puravida` in your `.zshrc
 ## Synopsis
 
 ```
-puravida <path>                  create a file or directory (parent dirs made as needed)
-puravida <dir> <file>...         create a directory containing the named files
-puravida <file> <content>...     create a file containing the given text
+puravida <path>...               create files (dotted leaf) and directories (dotless leaf or trailing /)
+puravida <dir> <path>...         a leading directory holds the paths created after it
+puravida <file> ~~ <content>...  create a file containing the inline text after ~~
 puravida <file> ~                create a file from pasted input ending in a ~ line
+puravida -f <name>...            force dotless names to be files (e.g. Makefile)
 puravida -h | --help             show usage
 puravida --version               show the version
 ```
 
-A path whose final segment contains a `.` is treated as a file; otherwise it's a directory (see [Notes / Limitations](#notes--limitations)).
+A path whose final segment contains a `.` is treated as a file; otherwise it's a directory. A trailing `/` always forces a directory (see [Notes / Limitations](#notes--limitations)).
 
 ### Options
 
 | Option | Description |
 | --- | --- |
+| `-f`, `--file` | Treat dotless names as files (e.g. `Makefile`, `LICENSE`) |
 | `-h`, `--help` | Show usage and exit |
 | `--version` | Show the version and exit |
 
@@ -92,24 +94,33 @@ A path whose final segment contains a `.` is treated as a file; otherwise it's a
 | --- | --- |
 | `0` | Success |
 | `1` | A runtime error (e.g. a file or directory could not be created) |
-| `2` | A usage error (no arguments, or an unknown option) |
+| `2` | A usage error (no arguments, an unknown option, or `~~` with no preceding file) |
 
 ## Main Use Cases
 
-🌴 usage 1: oneliner combining `mkdir -p` and `touch`. e.g., `puravida dir_1/dir_2/file.txt`
+🌴 usage 1: oneliner combining `mkdir -p` and `touch`. e.g., `puravida dir_1/dir_2/file.txt`. Several paths at once each create their own file or directory: `puravida a.txt b.txt` makes two files.
 
-🌊 usage 2: create (optionally nested) directory and one or more empty files in it. e.g., `puravida dir/nested_dir file1.txt file2.txt`
+🌊 usage 2: a leading directory holds the paths created after it (parents made as needed). e.g., `puravida dir/nested_dir file1.txt file2.txt`, or with nesting, `puravida .claude/ settings.json commands/cmd.md`.
 
-🐚 usage 3: create (optionally nested) directory and a file in it with inline contents (single or double quoted). e.g., `puravida dir/file.txt "hi"`
+🐚 usage 3: create a file with inline contents after a `~~` marker. e.g., `puravida dir/file.txt ~~ hi`. The content is everything after `~~`, joined with spaces, and it attaches to the most recently named file — so `puravida a.txt b.txt ~~ hi` leaves `a.txt` empty and writes `hi` to `b.txt`.
 
-🏖️ usage 4: create (optionally nested) directory a file in it with (optionally multiline) contents (last line must just say ~ and that's all) you paste in and hit enter.
-e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in an `~` line)
+🏖️ usage 4: create a file with (optionally multiline) contents you paste in, using a bare `~` (last line must just say `~` and that's all).
+e.g., `puravida dir/file.txt ~` (and then it awaits your content paste ending in a `~` line)
+
+🛠️ flags: `-f`/`--file` forces dotless names to be files, e.g. `puravida -f Makefile LICENSE Dockerfile`.
 
 ## Notes / Limitations
 
-`puravida` decides whether the thing you're creating is a file or a directory by looking at its **final path segment**: if that segment contains a `.` (e.g. `notes.txt`) it's treated as a file, otherwise it's treated as a directory. This means you can't create a *leaf* directory whose name contains a period — `puravida my.dir` and `puravida config.d` create files, not folders. A period in a *parent* directory is fine, though: `puravida my.dir/notes` still creates `my.dir/` as a directory.
+`puravida` decides whether the thing you're creating is a file or a directory by looking at its **final path segment**: if that segment contains a `.` (e.g. `notes.txt`) it's treated as a file, otherwise it's treated as a directory. A period in a *parent* directory is fine: `puravida my.dir/notes` still creates `my.dir/` as a directory. To override the guess at the leaf:
 
-For inline contents (usage 3), single quotes, double quotes, and no quotes all work — multiple unquoted words are joined with spaces. Quoting is handled entirely by your shell, so the usual rules apply: double quotes expand `$variables`, backticks, and `!`, while single quotes keep everything literal. Prefer single quotes for literal text — `puravida f.txt 'cost is $5'` writes `cost is $5`, whereas double quotes would try to expand `$5`.
+- **Dotted name you want as a directory** (e.g. `.claude`, `.vscode`): add a trailing slash — `puravida .claude/`. The slash works on any argument and composes, e.g. `puravida .claude/ settings.json commands/`.
+- **Dotless name you want as a file** (e.g. `Makefile`, `LICENSE`): use `-f` — `puravida -f Makefile`.
+
+**Why there's no `-d` flag.** The trailing slash already forces a directory inline and composably (on any argument, not just the first), so a separate "make this a directory" flag would be redundant. The asymmetry is deliberate: dir-forcing has an inline marker (`/`), so it needs no flag; file-forcing has no clean inline marker, so it gets the `-f` flag.
+
+**Inline content and the `~~` marker.** Content after `~~` is written verbatim into the most recently named file, joined with spaces. Quoting is handled entirely by your shell, so the usual rules apply: double quotes expand `$variables`, backticks, and globs, while single quotes keep everything literal. Prefer single quotes for anything with `$`, quotes, or special characters — `puravida global.css ~~ '@import "tailwindcss";'` writes `@import "tailwindcss";` exactly, whereas leaving it unquoted would drop the quotes and let the shell act on the `;`.
+
+The marker is `~~` (two tildes) rather than one because a bare `~` is reserved for paste mode. `~~` works in every POSIX shell (bash, zsh, dash, ksh) because it isn't a valid tilde-expansion, so the shell passes it through literally. This is technically "unspecified" in POSIX but universal in practice; if a future shell ever expands it, the marker can be swapped for `--`, which is guaranteed by spec.
 
 ## Development
 

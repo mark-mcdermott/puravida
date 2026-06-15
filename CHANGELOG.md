@@ -6,15 +6,35 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-06-14
+
+### Changed
+- **BREAKING:** Redesigned the argument grammar.
+  - Inline content now requires a `~~` marker — `puravida notes.txt ~~ hello`
+    (previously `puravida notes.txt "hello"`). Content is everything after the
+    first `~~`, joined with spaces, and attaches to the most recently named file.
+  - Multiple paths each create their own file (dotted leaf) or directory
+    (dotless leaf), so `puravida a.txt b.txt` now creates two files (previously
+    it wrote `b.txt` into `a.txt`).
+  - A trailing `/` forces a directory, even on a dotted leaf (`puravida .claude/`).
+  - A leading directory still contains the paths named after it, now supporting
+    nested sub-paths with auto-created parents
+    (`puravida .claude/ settings.json commands/cmd.md`).
+- Standardized the `--help` output to the conventional `Usage:` / `Options:` /
+  `Examples:` layout, and removed the emoji from it.
+- Usage errors (no arguments, an unknown option, or `~~` with no preceding file)
+  exit with code `2`.
+
 ### Added
+- `-f`/`--file` flag to force dotless names (e.g. `Makefile`, `LICENSE`) to be files.
+- Optional `make install-pv` target that symlinks `pv` → `puravida`.
 - A `man` page (`man/puravida.1`), installed by `make install`.
 - Synopsis, Options, and Exit status sections in the README.
 - Unknown options are now rejected with a clear error.
 
-### Changed
-- Standardized the `--help` output to the conventional `Usage:` / `Options:` /
-  `Examples:` layout, and removed the emoji from it.
-- Usage errors (no arguments, or an unknown option) now exit with code `2`.
+### Removed
+- Inline content without the `~~` marker (quoted or bare) — see the BREAKING note.
+  There is intentionally no `-d` flag; a trailing `/` forces a directory inline.
 
 ## [1.0.0] - 2026-06-11
 
@@ -37,5 +57,6 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - The tilde check no longer errors with `too many arguments` on multi-word
   second arguments.
 
-[Unreleased]: https://github.com/mark-mcdermott/puravida/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/mark-mcdermott/puravida/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/mark-mcdermott/puravida/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/mark-mcdermott/puravida/releases/tag/v1.0.0
