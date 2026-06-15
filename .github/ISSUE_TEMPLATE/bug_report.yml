@@ -1,0 +1,36 @@
+name: Bug report
+description: Something isn't working the way the docs say it should
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: The command you ran and what went wrong.
+      placeholder: |
+        $ puravida notes.txt ~~ hello
+        ...what you saw...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: puravida version
+      description: Output of `puravida --version`.
+      placeholder: puravida 2.1.1
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: OS and shell
+      description: Behavior can depend on both.
+      placeholder: macOS 14 / zsh — or Ubuntu 24.04 / bash
+    validations:
+      required: true
