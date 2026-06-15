@@ -64,7 +64,7 @@ cd puravida
 sudo make install          # copies the puravida script to /usr/local/bin
 ```
 
-Or do it by hand — drop the `puravida` script into a directory on your `PATH` (e.g. `/usr/local/bin`; in mac Finder hit `cmd + shift + .` if you don't see the hidden `usr` folder) and make it executable:
+Or do it by hand — drop the `puravida` script into a directory on your `PATH` (e.g. `/usr/local/bin`) and make it executable:
 
 ```
 sudo cp puravida /usr/local/bin/puravida
