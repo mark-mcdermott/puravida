@@ -2,7 +2,7 @@
 
 [![tests](https://github.com/mark-mcdermott/puravida/actions/workflows/tests.yml/badge.svg)](https://github.com/mark-mcdermott/puravida/actions/workflows/tests.yml)
 [![lint](https://github.com/mark-mcdermott/puravida/actions/workflows/lint.yml/badge.svg)](https://github.com/mark-mcdermott/puravida/actions/workflows/lint.yml)
-[![release](https://img.shields.io/github/v/release/mark-mcdermott/puravida?label=release)](https://github.com/mark-mcdermott/puravida/releases/latest)
+[![release](https://badgen.net/github/tag/mark-mcdermott/puravida?label=release&color=blue)](https://github.com/mark-mcdermott/puravida/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <p align="center">
