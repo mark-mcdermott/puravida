@@ -16,7 +16,7 @@
 ## Demo
 
 <p align="center">
-  <img src="demo.gif" alt="terminal recording demonstrating puravida's main use cases">
+  <video src="https://github.com/user-attachments/assets/326da4e8-15d0-4366-8bdb-f155c09235af" controls></video>
 </p>
 
 ## What it replaces
