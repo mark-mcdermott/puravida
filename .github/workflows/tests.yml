@@ -4,24 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "29 6 * * *"
 
 jobs:
-  bats:
-    name: bats (${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v5
-      - name: Install bats
-        shell: bash
-        run: |
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            brew install bats-core
-          else
-            sudo apt-get update && sudo apt-get install -y bats
-          fi
-      - name: Run tests
-        run: bats test/
+  verify:
+    uses: mark-mcdermott/mm-claude-starter/.github/workflows/bash-verify.yml@main
+    with:
+      test-command: bats test/
+      install-bats: true
+      os: '["ubuntu-latest", "macos-latest"]'
