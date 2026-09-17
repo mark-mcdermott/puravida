@@ -4,12 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "29 6 * * *"
 
 jobs:
-  shellcheck:
-    name: shellcheck
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Lint with shellcheck
-        run: shellcheck puravida
+  verify:
+    uses: mark-mcdermott/mm-claude-starter/.github/workflows/bash-verify.yml@main
+    with:
+      shellcheck-paths: puravida
