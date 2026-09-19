@@ -16,8 +16,10 @@
 ## Demo
 
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/326da4e8-15d0-4366-8bdb-f155c09235af" controls></video>
+  <video src="https://github.com/user-attachments/assets/36c780df-340e-4ebf-b126-4aa1981c3f35" controls></video>
 </p>
+
+Prefer YouTube? [Watch here.](https://youtu.be/qqMrRBFa2e4)
 
 ## What it replaces
 
