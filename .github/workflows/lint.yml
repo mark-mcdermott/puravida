@@ -8,7 +8,11 @@ on:
     - cron: "29 6 * * *"
 
 jobs:
-  verify:
-    uses: mark-mcdermott/mm-claude-starter/.github/workflows/bash-verify.yml@main
-    with:
-      shellcheck-paths: puravida
+  shellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Shellcheck
+        run: shellcheck puravida

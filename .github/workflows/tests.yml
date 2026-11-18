@@ -8,9 +8,24 @@ on:
     - cron: "29 6 * * *"
 
 jobs:
-  verify:
-    uses: mark-mcdermott/mm-claude-starter/.github/workflows/bash-verify.yml@main
-    with:
-      test-command: bats test/
-      install-bats: true
-      os: '["ubuntu-latest", "macos-latest"]'
+  test:
+    name: test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install bats
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            brew install bats-core
+          else
+            sudo apt-get update && sudo apt-get install -y bats
+          fi
+
+      - name: Test
+        run: bats test/
